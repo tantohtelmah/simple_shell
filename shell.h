@@ -1,6 +1,7 @@
 #ifndef SHELL_H
 #define SHELL_H
 
+extern char **environ;
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -10,6 +11,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <linux/limits.h>
 
 ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
 int builtin_checker(char *command);
@@ -18,6 +20,7 @@ char **split_string(char *str, const char *delim, int *num_words);
 char *_getenv(const char *name);
 ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
 char *_strtok(char *str, const char *delim);
+int execute(char *args[], int *status);
 
 #endif /* SHELL_H */
 
