@@ -12,15 +12,21 @@ extern char **environ;
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <linux/limits.h>
+#include <stdarg.h>
+#include <ctype.h>
 
-ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
-int builtin_checker(char *command);
+typedef struct common
+{
+	int argc;
+	char **argv;
+	char *tmp;
+	int status;
+} common_t;
+
+int builtin_checker(char *command, char *args[], common_t *_common);
 int check_file_in_path(char *path);
-char **split_string(char *str, const char *delim, int *num_words);
-char *_getenv(const char *name);
-ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
-char *_strtok(char *str, const char *delim);
 int execute(char *args[], int *status);
+int exit_func(int argc1, ...);
 
 #endif /* SHELL_H */
 
