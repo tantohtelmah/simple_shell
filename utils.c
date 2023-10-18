@@ -56,6 +56,7 @@ int builtin_checker(char *command, char *args[], common_t *_common)
 
 	if (strcmp(command, "exit") == 0)
 	{
+        free(_common->command);
 		if (args[2])
 		{
 			fprintf(stderr, "%s: %s: too many arguments\n", _common->argv[0], args[0]);
@@ -98,22 +99,22 @@ int builtin_checker(char *command, char *args[], common_t *_common)
 		else if (args[1])
 		{
             DIR* dir = opendir(args[1]);
-            
+
             if (strcmp(args[1], "-") == 0)
 			{
 				char *old_pwd = getenv("OLDPWD");
 
-				if (old_pwd == NULL)
-				{
-					fprintf(stderr, "%s :%s :OLDPWD not set\n", _common->argv[0], args[0]);
-                     _common->status = 1;
-				}
-                else
+				if (old_pwd != NULL)
                 {
                     setenv("PWD", old_pwd, 1);
                     setenv("OLDPWD", pwd, 1);
                     chdir(old_pwd);
                     _common->status = 0;
+                    printf("%s\n", old_pwd);
+                }
+                else
+                {
+                    printf("%s\n", pwd);
                 }
 			}
 			else if (dir)
@@ -123,9 +124,9 @@ int builtin_checker(char *command, char *args[], common_t *_common)
 				setenv("OLDPWD", pwd, 1);
                  _common->status = 0;
 			}
-			else if (ENOENT == errno || ENOTDIR == errno)
+            else if (ENOENT == errno || ENOTDIR == errno || EACCES == errno)
 			{
-				fprintf(stderr, "%s: 1: %s: No such file or directory: %s\n", _common->argv[0], args[0], args[1]);
+				fprintf(stderr, "%s: 1: %s: can't cd to %s\n", _common->argv[0], args[0], args[1]);
                  _common->status = 1;
 			}
 		}
@@ -143,6 +144,12 @@ int builtin_checker(char *command, char *args[], common_t *_common)
 		}
 		return (1);
 	}
+    else if (strcmp(args[0], "pwd") == 0)
+    {
+        fprintf(stdout, "%s\n", getenv("PWD"));
+        _common->status = 0;
+        return (1);
+    }
 	else
 	{
 		return (0);

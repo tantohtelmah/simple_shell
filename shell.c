@@ -10,8 +10,6 @@ int main(int argc, char **argv);
 */
 int main(int argc, char **argv)
 {
-	char *command = NULL;
-	size_t len = 0;
 	int i;
 	char *path = getenv("PATH");
 	char *path_dup;
@@ -22,19 +20,20 @@ int main(int argc, char **argv)
 
 	_common.argc = argc;
 	_common.argv = argv;
-
 	while (1)
 	{
 		i = 0;
 		/* CREATING THE PROMPT */
 		if (isatty(STDIN_FILENO))
 			printf("$ ");
-		if (getline(&command, &len, stdin) == -1)
+		_common.command = NULL;
+		_common.len = 0;
+		if (getline(&_common.command, &_common.len, stdin) == -1)
 		{
-			free(command);
+			free(_common.command);
 			break;
 		}
-		args[i] = strtok(command, " \n");
+		args[i] = strtok(_common.command, " \n");
 		while (args[i])
 			args[++i] = strtok(NULL, " \n");
 		if (!args[0])
@@ -56,6 +55,7 @@ int main(int argc, char **argv)
 		{
 			_common.tmp = getcwd(NULL, 0);
 			sprintf(cmd_path, "%s/%s", _common.tmp, args[0]);
+			free(_common.tmp);
 			if (check_file_in_path(cmd_path))
 			{
 				execute(args, &_common.status);
@@ -82,7 +82,7 @@ int main(int argc, char **argv)
 					printf("Command not found\n");
 			}
 		}
-		/*free(command);*/
+		free(_common.command);
 	}
 	return (0);
 }

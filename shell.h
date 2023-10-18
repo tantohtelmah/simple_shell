@@ -22,6 +22,8 @@ typedef struct common
 	char **argv;
 	char *tmp;
 	int status;
+	char *command;
+	size_t len;
 } common_t;
 
 int builtin_checker(char *command, char *args[], common_t *_common);
