@@ -29,12 +29,33 @@ void CTRLC(int indicator);
 
 int copystr(char *str, char *addr);
 int builtin_checker(char *command);
+
+#include <stdarg.h>
+#include <ctype.h>
+#include <errno.h>
+/**
+ * struct common - A struct
+ * @argc: member 1
+ * @argv: mem 2
+ * @status: mem 3
+ * @command: mem 4
+ * @tmp: mem 5
+ * @len: mem 6
+ */
+typedef struct common
+{
+	int argc;
+	char **argv;
+	char *tmp;
+	int status;
+	char *command;
+	size_t len;
+} common_t;
+
+int builtin_checker(char *command, char *args[], common_t *_common);
 int check_file_in_path(char *path);
-char **split_string(char *str, const char *delim, int *num_words);
-char *_getenv(const char *name);
-ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
-char *_strtok(char *str, const char *delim);
 int execute(char *args[], int *status);
+int exit_func(int argc1, ...);
 
 #endif /* SHELL_H */
 
