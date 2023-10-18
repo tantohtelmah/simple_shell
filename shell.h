@@ -14,6 +14,7 @@ extern char **environ;
 #include <linux/limits.h>
 #include <stdarg.h>
 #include <ctype.h>
+#include <errno.h>
 
 typedef struct common
 {

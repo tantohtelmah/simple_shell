@@ -59,25 +59,25 @@ int builtin_checker(char *command, char *args[], common_t *_common)
 		if (args[2])
 		{
 			fprintf(stderr, "%s: %s: too many arguments\n", _common->argv[0], args[0]);
-            exit(1);
+			exit(1);
 		}
-        else if (args[1])
+		else if (args[1])
 		{
-            while(args[1][i])
-            {
-                if (!isdigit(args[1][i++]))
-                {
-                    fprintf(stderr, "%s: 1: %s: Illegal number: %s\n", _common->argv[0], args[0], args[1]);
-                    exit(2);
-                }
-            }
+			while(args[1][i])
+			{
+				if (!isdigit(args[1][i++]))
+				{
+					fprintf(stderr, "%s: 1: %s: Illegal number: %s\n", _common->argv[0], args[0], args[1]);
+					exit(2);
+				}
+			}
 			exit(atoi(args[1]));
 		}
-		else 
+		else
 		{
 			exit(_common->status);
 		}
-    }
+	}
 	else if (strcmp(command, "env") == 0)
 	{
 		while (environ[i] != NULL)
@@ -86,14 +86,65 @@ int builtin_checker(char *command, char *args[], common_t *_common)
 		}
 		return (0);
 	}
-	else if(strcmp(command, "cd") == 0)
+	else if (strcmp(command, "cd") == 0)
 	{
-		
+		char *pwd = getenv("PWD");
+
+		if (args[2])
+        {
+			fprintf(stderr, "%s: %s: too many arguments\n", _common->argv[0], args[0]);
+            _common->status = 1;
+        }
+		else if (args[1])
+		{
+            DIR* dir = opendir(args[1]);
+            
+            if (strcmp(args[1], "-") == 0)
+			{
+				char *old_pwd = getenv("OLDPWD");
+
+				if (old_pwd == NULL)
+				{
+					fprintf(stderr, "%s :%s :OLDPWD not set\n", _common->argv[0], args[0]);
+                     _common->status = 1;
+				}
+                else
+                {
+                    setenv("PWD", old_pwd, 1);
+                    setenv("OLDPWD", pwd, 1);
+                    chdir(old_pwd);
+                    _common->status = 0;
+                }
+			}
+			else if (dir)
+			{
+				chdir(args[1]);
+				setenv("PWD", args[1], 1);
+				setenv("OLDPWD", pwd, 1);
+                 _common->status = 0;
+			}
+			else if (ENOENT == errno || ENOTDIR == errno)
+			{
+				fprintf(stderr, "%s: 1: %s: No such file or directory: %s\n", _common->argv[0], args[0], args[1]);
+                 _common->status = 1;
+			}
+		}
+		else
+		{
+			char *home = getenv("HOME");
+
+			if (home != NULL)
+            {
+				chdir(home);
+                setenv("PWD", home, 1);
+				setenv("OLDPWD", pwd, 1);
+                 _common->status = 0;
+            }
+		}
+		return (1);
 	}
 	else
 	{
 		return (0);
 	}
-
-    return (0);
 }
