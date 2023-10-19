@@ -5,7 +5,6 @@ int main(int argc, char **argv);
  * main - Initiates a prompt for the simple shell
  * @argc: integer, number of arguments from the terminal
  * @argv: char, array of arguments
- * @envp: char
  * Return: Int
 */
 int main(int argc, char **argv)
