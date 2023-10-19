@@ -15,9 +15,9 @@ extern char **environ;
 #include <signal.h>
 #include <fcntl.h>
 #include <linux/limits.h>
-#include "utils_getline.c"
+/*#include "utils_getline.c"*/
 
-ssize_t _getline(char **linebuff, size_t *nbyte, FILE *stream);
+/*ssize_t _getline(char **linebuff, size_t *nbyte, FILE *stream);*/
 void *_realloc(void *addr, unsigned int new_sz);
 char *homedir(void);
 
@@ -28,7 +28,7 @@ void KILLIT(int indicator);
 void CTRLC(int indicator);
 
 int copystr(char *str, char *addr);
-int builtin_checker(char *command);
+/*int builtin_checker(char *command);*/
 
 #include <stdarg.h>
 #include <ctype.h>
