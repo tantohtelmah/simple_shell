@@ -13,12 +13,14 @@ int main(int argc, char **argv)
 	char *path = getenv("PATH");
 	char *path_dup;
 	char *token;
-	char *args[100];
+	char *args[100] = {NULL};
 	char cmd_path[PATH_MAX];
 	common_t _common = {0};
 
 	_common.argc = argc;
 	_common.argv = argv;
+	_common.tmp = NULL;
+	_common.status = 0;
 	while (1)
 	{
 		i = 0;
